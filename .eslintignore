@@ -1,0 +1,4 @@
+build/*
+scripts/third-party/*
+*.min.js
+*.jsx
