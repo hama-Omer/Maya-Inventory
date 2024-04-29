@@ -2,20 +2,21 @@ import React, { useState } from "react";
 import MayaButton from "./MayaButton";
 import MayaInput from "./MayaInput";
 import MayaCheckBox from "./MayaCheckBox";
-import { faSearch } from "@fortawesome/free-solid-svg-icons";
+import { faEdit, faSearch } from "@fortawesome/free-solid-svg-icons";
 
 export default function MayaTable({ columns, data, onEdit, onDelete }) {
   const [search, setSearch] = useState("");
+  const [categoryFilter, setCategoryFilter] = useState([]);
 
   const typeOFItems = [
-    "Computer",
-    "Monitor",
-    "Device",
-    "Phone",
-    "Printer",
-    "AV",
-    "Network Device",
-    "System",
+    "computer",
+    "monitor",
+    "device",
+    "phone",
+    "printer",
+    "av",
+    "network Device",
+    "system",
   ];
 
   const buttonColor = "bg-indigo-900";
@@ -40,11 +41,19 @@ export default function MayaTable({ columns, data, onEdit, onDelete }) {
       />
 
       <div className="flex">
-        {typeOFItems.map((checkboxes) => {
+        {typeOFItems.map((checkbox) => {
           return (
             <MayaCheckBox
-              key={checkboxes}
-              text={checkboxes}
+              onChange={(e) => {
+                e.target.checked
+                  ? setCategoryFilter([...categoryFilter, checkbox])
+                  : setCategoryFilter(
+                      categoryFilter.filter((checked) => checked !== checkbox)
+                    );
+              }}
+              key={checkbox}
+              text={checkbox}
+              value={categoryFilter.includes(checkbox)}
               color={checkBoxTextColor}
             />
           );
@@ -69,9 +78,10 @@ export default function MayaTable({ columns, data, onEdit, onDelete }) {
           <tbody className="[&>*:nth-child(even)]:bg-slate-400  [&>*:nth-child(odd)]:bg-slate-600 cursor-pointer  h-1/2 overflow-y-auto overflow-x-hidden">
             {data
               .filter((item) => {
-                return search.toLocaleLowerCase() === ""
-                  ? item
-                  : item.name.toLocaleLowerCase().includes(search) ||
+                let seek =
+                  search.toLocaleLowerCase() === ""
+                    ? item
+                    : item.name.toLocaleLowerCase().includes(search) ||
                       item.serialNumber.toLocaleLowerCase().includes(search) ||
                       item.location.toLocaleLowerCase().includes(search) ||
                       item.user.toLocaleLowerCase().includes(search) ||
@@ -79,7 +89,14 @@ export default function MayaTable({ columns, data, onEdit, onDelete }) {
                       item.brand.toLocaleLowerCase().includes(search) ||
                       item.status.toLocaleLowerCase().includes(search) ||
                       item.vendor.toLocaleLowerCase().includes(search) ||
-                      item.Type.toLocaleLowerCase().includes(search);
+                      item.type.toLocaleLowerCase().includes(search);
+
+                let cat =
+                  categoryFilter.length > 0
+                    ? categoryFilter.includes(item.type.toLocaleLowerCase())
+                    : true;
+
+                return seek && cat;
               })
               .map((item) => (
                 <tr
@@ -92,7 +109,7 @@ export default function MayaTable({ columns, data, onEdit, onDelete }) {
                   <td className="w-24">
                     <MayaButton
                       onClick={() => onEdit(item)}
-                      text="Edit"
+                      icon={faEdit}
                       size="w-full"
                       color={buttonColor}
                       hoverBgColor={hoverBgColor}

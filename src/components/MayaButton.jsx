@@ -1,4 +1,4 @@
-import { faCalendar } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 export default function MayaButton({
   htmltype,
   size,
@@ -7,6 +7,7 @@ export default function MayaButton({
   hoverBgColor,
   hoverTextxColor,
   onClick = () => {},
+  icon,
 }) {
   return (
     <button
@@ -15,6 +16,7 @@ export default function MayaButton({
       className={`${size} flex items-center justify-center 
       h-14 text-white ${color} cursor-pointer ${hoverBgColor}  ${hoverTextxColor} transition-700 duration-500  rounded-3xl`}
     >
+      {icon && <FontAwesomeIcon className={`white`} icon={icon} />}
       {text}
     </button>
   );
